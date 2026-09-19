@@ -115,13 +115,36 @@ form.addEventListener("submit", function(e) {
 
   input.value = "";
 
-  setTimeout(function() {
-    const respuesta = document.createElement("div");
-    respuesta.className = "msg bot";
-    respuesta.textContent = "¡Hola! 👋 Soy Seinat Perfec. He recibido tu mensaje.";
-    messages.appendChild(respuesta);
-    messages.scrollTop = messages.scrollHeight;
-  }, 600);
+  fetch("/api/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ message: texto })
+})
+.then(async function(response) {
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Error de la IA");
+  }
+
+  return data;
+})
+.then(function(data) {
+  const respuesta = document.createElement("div");
+  respuesta.className = "msg bot";
+  respuesta.textContent = data.reply;
+  messages.appendChild(respuesta);
+  messages.scrollTop = messages.scrollHeight;
+})
+.catch(function(error) {
+  const respuesta = document.createElement("div");
+  respuesta.className = "msg bot";
+  respuesta.textContent = "No pude conectarme con la IA. Inténtalo de nuevo.";
+  messages.appendChild(respuesta);
+  messages.scrollTop = messages.scrollHeight;
+});
 });
 </script>
 
