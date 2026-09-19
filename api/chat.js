@@ -10,29 +10,43 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Falta el mensaje" });
     }
 
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-5.6-luna",
-        instructions: "Eres Seinat Perfec, una asistente de IA amable, clara y útil. Responde siempre en español.",
-        input: message
-      })
-    });
+    const response = await fetch(
+      "https://router.huggingface.co/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.HF_TOKEN}`
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-oss-120b:fastest",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Eres Seinat Perfec, una asistente de IA amable, clara y útil. Responde siempre en español."
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: data.error?.message || "Error de OpenAI"
+        error: data.error?.message || "Error de Hugging Face"
       });
     }
 
     return res.status(200).json({
-      reply: data.output_text
+      reply:
+        data.choices?.[0]?.message?.content ||
+        "No recibí una respuesta."
     });
 
   } catch (error) {
