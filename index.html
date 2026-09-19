@@ -59,6 +59,27 @@ footer{text-align:center;color:#89849a;font-size:12px;padding:12px}
     <input id="input" autocomplete="off" placeholder="Escribe tu mensaje..." />
     <button id="send" type="submit">➤</button>
   </form>
+  <div class="video-maker">
+  <h3>🎬 Crear video con IA</h3>
+
+  <textarea
+    id="videoPrompt"
+    placeholder="Describe el video que quieres crear..."
+    rows="4"
+  ></textarea>
+
+  <button id="createVideo" type="button">
+    🎬 Crear video
+  </button>
+
+  <div id="videoStatus"></div>
+
+  <video
+    id="videoResult"
+    controls
+    style="display:none; width:100%; margin-top:15px; border-radius:15px;"
+  ></video>
+  </div>
 </main>
 
 
@@ -110,6 +131,51 @@ form.addEventListener("submit", function(e) {
   messages.appendChild(respuesta);
   messages.scrollTop = messages.scrollHeight;
 });
+});
+    const createVideo = document.getElementById("createVideo");
+const videoPrompt = document.getElementById("videoPrompt");
+const videoStatus = document.getElementById("videoStatus");
+const videoResult = document.getElementById("videoResult");
+
+createVideo.addEventListener("click", async function () {
+  const prompt = videoPrompt.value.trim();
+
+  if (!prompt) {
+    videoStatus.textContent = "Escribe primero qué video quieres crear.";
+    return;
+  }
+
+  createVideo.disabled = true;
+  videoStatus.textContent = "🎬 Creando tu video... Esto puede tardar un poco.";
+  videoResult.style.display = "none";
+
+  try {
+    const response = await fetch("/api/video", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt: prompt })
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "No se pudo crear el video.");
+    }
+
+    const blob = await response.blob();
+    const videoUrl = URL.createObjectURL(blob);
+
+    videoResult.src = videoUrl;
+    videoResult.style.display = "block";
+    videoStatus.textContent = "✅ ¡Tu video está listo!";
+  } catch (error) {
+    console.error(error);
+    videoStatus.textContent =
+      "❌ No se pudo crear el video. Inténtalo de nuevo.";
+  } finally {
+    createVideo.disabled = false;
+  }
 });
 </script>
 
