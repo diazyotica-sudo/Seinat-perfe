@@ -60,39 +60,7 @@ footer{text-align:center;color:#89849a;font-size:12px;padding:12px}
     <button id="send" type="submit">➤</button>
   </form>
 </main>
-<footer>Seinat Perfec · Versión inicial</footer>
-</div>
 
-<script>
-const messages=document.getElementById('messages');
-const input=document.getElementById('input');
-const form=document.getElementById('form');
-const welcome=document.getElementById('welcome');
-
-function add(text,who){
-  const el=document.createElement('div');
-  el.className='msg '+who;
-  el.textContent=text;
-  messages.appendChild(el);
-  messages.scrollTop=messages.scrollHeight;
-}
-function reply(text){
-  const t=text.toLowerCase();
-  let r="Soy Seinat Perfec. Esta es la versión inicial de tu asistente. Puedo recibir tus mensajes y, en la siguiente etapa, conectaremos una API de IA para generar respuestas reales.";
-  if(t.includes('hola')) r="¡Hola! 👋 Soy Seinat Perfec. ¿Qué quieres hacer hoy?";
-  else if(t.includes('proyecto')||t.includes('idea')) r="Claro. Cuéntame tu idea y te ayudo a convertirla en un proyecto paso a paso.";
-  else if(t.includes('escribir')||t.includes('texto')) r="Perfecto. Dime qué quieres escribir y para quién, y prepararemos el texto.";
-  else if(t.includes('explica')||t.includes('explicar')) r="Claro. Dime el tema y te lo explicaré de forma sencilla.";
-  setTimeout(()=>add(r,'bot'),350);
-}
-form.addEventListener('submit',e=>{
-  e.preventDefault();
-  const text=input.value.trim(); if(!text)return;
-  welcome.style.display='none'; add(text,'user'); input.value=''; reply(text);
-});
-document.querySelectorAll('.quick button').forEach(b=>b.addEventListener('click',()=>{
-  input.value=b.dataset.q; form.requestSubmit();
-}));
 document.getElementById('clear').addEventListener('click',()=>{
   messages.innerHTML=''; welcome.style.display='block'; input.focus();
 });
