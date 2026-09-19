@@ -18,8 +18,7 @@ export default async function handler(req, res) {
       provider: "fal-ai",
       model: "Wan-AI/Wan2.2-TI2V-5B",
       inputs: prompt,
-      num_frames: 121,
-num_inference_steps: 30
+      
     });
 
     const buffer = Buffer.from(await video.arrayBuffer());
