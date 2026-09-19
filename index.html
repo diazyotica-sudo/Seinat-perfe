@@ -97,5 +97,34 @@ document.getElementById('clear').addEventListener('click',()=>{
   messages.innerHTML=''; welcome.style.display='block'; input.focus();
 });
 </script>
+  <script>
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  const mensaje = document.createElement("div");
+  mensaje.className = "msg user";
+  mensaje.textContent = texto;
+  messages.appendChild(mensaje);
+
+  input.value = "";
+
+  setTimeout(function() {
+    const respuesta = document.createElement("div");
+    respuesta.className = "msg bot";
+    respuesta.textContent = "¡Hola! 👋 Soy Seinat Perfec. He recibido tu mensaje.";
+    messages.appendChild(respuesta);
+    messages.scrollTop = messages.scrollHeight;
+  }, 600);
+});
+</script>
+
+
 </body>
 </html>
