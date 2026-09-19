@@ -17,7 +17,9 @@ export default async function handler(req, res) {
     const video = await client.textToVideo({
       provider: "fal-ai",
       model: "Wan-AI/Wan2.2-TI2V-5B",
-      inputs: prompt
+      inputs: prompt,
+      num_frames: 121,
+num_inference_steps: 30
     });
 
     const buffer = Buffer.from(await video.arrayBuffer());
