@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6c4cff">
+<title>Seinat Perfec</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f5f3ff;color:#171526}
+.app{min-height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#6c4cff,#9b7cff);color:white;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 15px #0002}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:15px;background:#fff;color:#6c4cff;display:grid;place-items:center;font-weight:900;font-size:22px}
+h1{font-size:20px;margin:0}.sub{font-size:12px;opacity:.85}
+button{border:0;cursor:pointer;font:inherit}
+#clear{background:#ffffff22;color:white;padding:9px 12px;border-radius:10px}
+main{flex:1;width:100%;max-width:850px;margin:auto;padding:20px;display:flex;flex-direction:column}
+.welcome{text-align:center;padding:35px 10px 20px}
+.welcome h2{font-size:30px;margin:0 0 8px}.welcome p{color:#6f6b7d;margin:0}
+.quick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.quick button{background:white;border:1px solid #e3defe;color:#5945c7;border-radius:20px;padding:9px 13px}
+#messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:15px}
+.msg{max-width:82%;padding:12px 15px;border-radius:18px;line-height:1.45;white-space:pre-wrap}
+.user{align-self:flex-end;background:#6c4cff;color:white;border-bottom-right-radius:5px}
+.bot{align-self:flex-start;background:white;border:1px solid #e8e4f5;border-bottom-left-radius:5px;box-shadow:0 2px 8px #00000008}
+.composer{display:flex;gap:8px;background:white;padding:9px;border:1px solid #ddd7f3;border-radius:18px;box-shadow:0 4px 18px #0001}
+#input{flex:1;border:0;outline:0;font-size:16px;padding:10px;background:transparent}
+#send{background:#6c4cff;color:white;width:48px;height:48px;border-radius:14px;font-size:20px}
+footer{text-align:center;color:#89849a;font-size:12px;padding:12px}
+@media(max-width:600px){main{padding:12px}.welcome{padding-top:25px}.welcome h2{font-size:26px}.msg{max-width:90%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="logo">SP</div>
+    <div><h1>Seinat Perfec</h1><div class="sub">Tu asistente de IA</div></div>
+  </div>
+  <button id="clear">Limpiar</button>
+</header>
+
+<main>
+  <section class="welcome" id="welcome">
+    <h2>Hola 👋</h2>
+    <p>¿En qué puedo ayudarte hoy?</p>
+    <div class="quick">
+      <button data-q="Dame ideas para un proyecto">💡 Ideas</button>
+      <button data-q="Ayúdame a escribir un texto">✍️ Escribir</button>
+      <button data-q="Explícame algo de forma sencilla">🧠 Explicar</button>
+    </div>
+  </section>
+
+  <section id="messages" aria-live="polite"></section>
+
+  <form class="composer" id="form">
+    <input id="input" autocomplete="off" placeholder="Escribe tu mensaje..." />
+    <button id="send" type="submit">➤</button>
+  </form>
+</main>
+<footer>Seinat Perfec · Versión inicial</footer>
+</div>
+
+<script>
+const messages=document.getElementById('messages');
+const input=document.getElementById('input');
+const form=document.getElementById('form');
+const welcome=document.getElementById('welcome');
+
+function add(text,who){
+  const el=document.createElement('div');
+  el.className='msg '+who;
+  el.textContent=text;
+  messages.appendChild(el);
+  messages.scrollTop=messages.scrollHeight;
+}
+function reply(text){
+  const t=text.toLowerCase();
+  let r="Soy Seinat Perfec. Esta es la versión inicial de tu asistente. Puedo recibir tus mensajes y, en la siguiente etapa, conectaremos una API de IA para generar respuestas reales.";
+  if(t.includes('hola')) r="¡Hola! 👋 Soy Seinat Perfec. ¿Qué quieres hacer hoy?";
+  else if(t.includes('proyecto')||t.includes('idea')) r="Claro. Cuéntame tu idea y te ayudo a convertirla en un proyecto paso a paso.";
+  else if(t.includes('escribir')||t.includes('texto')) r="Perfecto. Dime qué quieres escribir y para quién, y prepararemos el texto.";
+  else if(t.includes('explica')||t.includes('explicar')) r="Claro. Dime el tema y te lo explicaré de forma sencilla.";
+  setTimeout(()=>add(r,'bot'),350);
+}
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const text=input.value.trim(); if(!text)return;
+  welcome.style.display='none'; add(text,'user'); input.value=''; reply(text);
+});
+document.querySelectorAll('.quick button').forEach(b=>b.addEventListener('click',()=>{
+  input.value=b.dataset.q; form.requestSubmit();
+}));
+document.getElementById('clear').addEventListener('click',()=>{
+  messages.innerHTML=''; welcome.style.display='block'; input.focus();
+});
+</script>
+</body>
+</html>
